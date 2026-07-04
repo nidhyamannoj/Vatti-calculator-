@@ -14,7 +14,7 @@
         input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 15px; }
         .date-container { margin-bottom: 12px; }
         button.calc-btn { width: 100%; background: var(--p); color: white; padding: 13px; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 5px; }
-        a.wa-btn { width: 100%; background: #25D366; color: white; padding: 10px; border: none; border-radius: 6px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 10px; display: none; text-align: center; text-decoration: none; box-sizing: border-box; }
+        button.wa-btn { width: 100%; background: #25D366; color: white; padding: 11px; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 12px; display: none; text-align: center; }
         .lang-container { display: flex; justify-content: center; margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 12px; }
         button.lang-btn { background: none; border: none; color: #555; text-decoration: underline; font-size: 13px; cursor: pointer; font-weight: bold; }
         button.lang-btn:hover { color: var(--p); }
@@ -67,8 +67,8 @@
         <p><span id="r3">மொத்தம் (Asal+Vatti):</span><span id="outTotal" style="font-weight:bold;color:#b71c1c;"></span></p>
     </div>
 
-    <!-- மாற்றியமைக்கப்பட்ட வாட்ஸ்அப் லிங்க் பட்டன் -->
-    <a id="waBtn" class="wa-btn" href="#" target="_blank">WhatsApp வழியாக பகிரவும்</a>
+    <!-- Restored clean button component format -->
+    <button id="waBtn" class="wa-btn" onclick="shareOnWhatsApp()">WhatsApp வழியாக பகிரவும்</button>
 
     <div class="lang-container">
         <button id="tg" class="lang-btn" onclick="calcToggleLang()">Switch to English</button>
@@ -83,6 +83,7 @@
 <script>
     document.getElementById('ed').value = new Date().toISOString().split('T');
     let isTamil = true;
+    let shareText = "";
 
     function calcToggleLang() {
         isTamil = !isTamil;
@@ -157,15 +158,18 @@
         document.getElementById('outTotal').innerText = displayTot;
         document.getElementById('out').style.display = 'block';
         
-        let shareText = isTamil ? 
+        shareText = isTamil ? 
             `*வட்டி கணக்கீடு அறிக்கை*\n\nஅசல் தொகை: ₹${pVal}\nகாலம்: ${timeString}\nவட்டி தொகை: ${displayInt}\nமொத்தம்: ${displayTot}` :
             `*Interest Calculation Report*\n\nPrincipal: ₹${pVal}\nTime: ${timeString}\nInterest: ${displayInt}\nTotal: ${displayTot}`;
             
-        // வாட்ஸ்அப் லிங்க் நேரடியாக பட்டனில் இணைக்கப்படுகிறது
-        let waButton = document.getElementById('waBtn');
-        waButton.href = `https://whatsapp.com{encodeURIComponent(shareText)}`;
-        waButton.style.display = 'block';
+        document.getElementById('waBtn').style.display = 'block';
+    }
+
+    function shareOnWhatsApp() {
+        var cleanLink = "https://whatsapp.com" + encodeURIComponent(shareText);
+        window.open(cleanLink, "_blank");
     }
 </script>
 </body>
 </html>
+
