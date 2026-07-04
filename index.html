@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roopa / Paisa Vatti Calculator - Traditional Village Interest Tool</title>
+    <style>
+        :root { --p: #b71c1c; --b: #fff8f8; --c: #ffffff; --t: #212121; }
+        body { font-family: sans-serif; background: var(--b); color: var(--t); margin: 0; padding: 12px; display: flex; flex-direction: column; align-items: center; }
+        .box { background: var(--c); padding: 18px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; box-sizing: border-box; }
+        h2 { text-align: center; color: var(--p); margin: 0 0 15px 0; font-size: 22px; }
+        .g { margin-bottom: 12px; }
+        label { display: block; margin-bottom: 4px; font-weight: bold; font-size: 13px; white-space: nowrap; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 15px; }
+        .date-container { margin-bottom: 12px; }
+        button.calc-btn { width: 100%; background: var(--p); color: white; padding: 13px; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 5px; }
+        a.wa-btn { width: 100%; background: #25D366; color: white; padding: 10px; border: none; border-radius: 6px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 10px; display: none; text-align: center; text-decoration: none; box-sizing: border-box; }
+        .lang-container { display: flex; justify-content: center; margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 12px; }
+        button.lang-btn { background: none; border: none; color: #555; text-decoration: underline; font-size: 13px; cursor: pointer; font-weight: bold; }
+        button.lang-btn:hover { color: var(--p); }
+        .res { margin-top: 15px; padding: 12px; background: #ffebee; border-left: 5px solid var(--p); border-radius: 4px; display: none; }
+        .res p { margin: 6px 0; font-size: 15px; display: flex; justify-content: space-between; }
+        .seo-text { max-width: 400px; margin: 20px auto; font-family: sans-serif; line-height: 1.6; color: #555; background: #fff; padding: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); box-sizing: border-box; }
+        .seo-text h3 { color: var(--p); margin-top: 0; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2 id="t">வட்டி கணக்கீட்டாளர்</h2>
+    
+    <div class="g">
+        <label id="l1">அசல் தொகை (Asal):</label>
+        <input type="number" id="p" placeholder="எ.கா. 100000">
+    </div>
+    
+    <div class="g">
+        <label id="l2">வட்டி வகை:</label>
+        <select id="ty">
+            <option id="o1" value="p" selected>ரூபாய் / பைசா வட்டி (மாதம் ₹100-க்கு)</option>
+            <option id="o2" value="m">மாதாந்திர சதவீதம் (%)</option>
+            <option id="o3" value="y">ஆண்டு சதவீதம் (%)</option>
+        </select>
+    </div>
+    
+    <div class="g">
+        <label id="l3">வட்டி விகிதம்:</label>
+        <input type="number" id="r" step="0.01" placeholder="எ.கா. 2 (ரூ.2 வட்டிக்கு)">
+    </div>
+    
+    <div class="date-container">
+        <div class="g">
+            <label id="l4">தொடங்கிய தேதி:</label>
+            <input type="date" id="sd">
+        </div>
+        <div class="g">
+            <label id="l5">முடிவுற்ற தேதி:</label>
+            <input type="date" id="ed">
+        </div>
+    </div>
+    
+    <button class="calc-btn" id="btn" onclick="calcRunMath()">வட்டியைக் கணக்கிடு</button>
+    
+    <div class="res" id="out">
+        <p><span id="r1">காலம்:</span><span id="outTime"></span></p>
+        <p><span id="r2">வட்டி (Vatti):</span><span id="outInterest" style="font-weight:bold;color:#b71c1c;"></span></p>
+        <p><span id="r3">மொத்தம் (Asal+Vatti):</span><span id="outTotal" style="font-weight:bold;color:#b71c1c;"></span></p>
+    </div>
+
+    <!-- மாற்றியமைக்கப்பட்ட வாட்ஸ்அப் லிங்க் பட்டன் -->
+    <a id="waBtn" class="wa-btn" href="#" target="_blank">WhatsApp வழியாக பகிரவும்</a>
+
+    <div class="lang-container">
+        <button id="tg" class="lang-btn" onclick="calcToggleLang()">Switch to English</button>
+    </div>
+</div>
+
+<div class="seo-text">
+    <h3 id="sTitle">தமிழ்நாடு கிராமப்புற வட்டி கணக்கீடு (Village Vatti Rules)</h3>
+    <p id="sDesc">This traditional Roopa and Paisa Vatti Calculator helps you calculate simple village interest online. Enter your principal amount (Asal), interest type, and custom dates to get exact mathematical interest results in years, months, and days dynamically. Ideal for calculating finance values inside Tamil Nadu and rural lending spaces.</p>
+</div>
+
+<script>
+    document.getElementById('ed').value = new Date().toISOString().split('T');
+    let isTamil = true;
+
+    function calcToggleLang() {
+        isTamil = !isTamil;
+        
+        document.getElementById('tg').innerText = isTamil ? 'Switch to English' : 'தமிழ் பதிப்பிற்கு மாறவும்';
+        document.getElementById('t').innerText = isTamil ? 'வட்டி கணக்கீட்டாளர்' : 'Vatti Calculator';
+        document.getElementById('l1').innerText = isTamil ? 'அசல் தொகை (Asal):' : 'Principal Amount (Asal):';
+        document.getElementById('l2').innerText = isTamil ? 'வட்டி வகை:' : 'Interest Type:';
+        document.getElementById('l3').innerText = isTamil ? 'வட்டி விகிதம்:' : 'Interest Rate Value:';
+        document.getElementById('l4').innerText = isTamil ? 'தொடங்கிய தேதி:' : 'Start Date:';
+        document.getElementById('l5').innerText = isTamil ? 'முடிவுற்ற தேதி:' : 'End Date:';
+        document.getElementById('btn').innerText = isTamil ? 'வட்டியைக் கணக்கிடு' : 'Calculate Interest';
+        document.getElementById('r1').innerText = isTamil ? 'காலம்:' : 'Time:';
+        document.getElementById('r2').innerText = isTamil ? 'வட்டி (Vatti):' : 'Interest (Vatti):';
+        document.getElementById('r3').innerText = isTamil ? 'மொத்தம் (Asal+Vatti):' : 'Total (Asal+Vatti):';
+        document.getElementById('waBtn').innerText = isTamil ? 'WhatsApp வழியாக பகிரவும்' : 'Share via WhatsApp';
+        
+        document.getElementById('p').placeholder = isTamil ? 'எ.கா. 100000' : 'e.g. 100000';
+        document.getElementById('r').placeholder = isTamil ? 'எ.கா. 2 (ரூ.2 வட்டிக்கு)' : 'e.g. 2 (for Rs.2 vatti)';
+        
+        document.getElementById('o1').innerText = isTamil ? 'ரூபாய் / பைசா வட்டி (மாதம் ₹100-க்கு)' : 'Roopa / Paisa vatti (Per Month per ₹100)';
+        document.getElementById('o2').innerText = isTamil ? 'மாதாந்திர சதவீதம் (%)' : 'Monthly Percentage (%)';
+        document.getElementById('o3').innerText = isTamil ? 'ஆண்டு சதவீதம் (%)' : 'Annual Percentage / APR (%)';
+    }
+
+    function calcRunMath() {
+        let pVal = parseFloat(document.getElementById('p').value);
+        let rVal = parseFloat(document.getElementById('r').value);
+        let tyVal = document.getElementById('ty').value;
+        let sdStr = document.getElementById('sd').value;
+        let edStr = document.getElementById('ed').value;
+
+        if (!pVal || !rVal || !sdStr || !edStr) {
+            alert(isTamil ? 'அனைத்து விவரங்களையும் நிரப்பவும்' : 'Please fill all details');
+            return;
+        }
+
+        let s = new Date(sdStr), e = new Date(edStr);
+        if (e < s) {
+            alert(isTamil ? 'தேதி பிழை' : 'End date error');
+            return;
+        }
+
+        let sy = s.getFullYear(), sm = s.getMonth(), sdt = s.getDate();
+        let ey = e.getFullYear(), em = e.getMonth(), edt = e.getDate();
+
+        if (edt < sdt) { edt += new Date(ey, em, 0).getDate(); em -= 1; }
+        if (em < sm) { em += 12; ey -= 1; }
+
+        let diffD = edt - sdt, diffM = em - sm, diffY = ey - sy;
+        let totalM = (diffY * 12) + diffM + (diffD / 30);
+        let pct = (tyVal === 'y') ? rVal / 12 : rVal;
+        let finalInterest = (pVal * pct * totalM) / 100;
+
+        let parts = [];
+        if (isTamil) {
+            if (diffY > 0) parts.push(`${diffY} ஆண்டுகள்`);
+            if (diffM > 0) parts.push(`${diffM} மாதம்`);
+            if (diffD > 0 || parts.length === 0) parts.push(`${diffD} நாட்கள்`);
+        } else {
+            if (diffY > 0) parts.push(`${diffY}Y`);
+            if (diffM > 0) parts.push(`${diffM}M`);
+            if (diffD > 0 || parts.length === 0) parts.push(`${diffD}D`);
+        }
+        let timeString = parts.join(', ');
+
+        let displayInt = '₹' + finalInterest.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        let displayTot = '₹' + (pVal + finalInterest).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+        document.getElementById('outTime').innerText = timeString;
+        document.getElementById('outInterest').innerText = displayInt;
+        document.getElementById('outTotal').innerText = displayTot;
+        document.getElementById('out').style.display = 'block';
+        
+        let shareText = isTamil ? 
+            `*வட்டி கணக்கீடு அறிக்கை*\n\nஅசல் தொகை: ₹${pVal}\nகாலம்: ${timeString}\nவட்டி தொகை: ${displayInt}\nமொத்தம்: ${displayTot}` :
+            `*Interest Calculation Report*\n\nPrincipal: ₹${pVal}\nTime: ${timeString}\nInterest: ${displayInt}\nTotal: ${displayTot}`;
+            
+        // வாட்ஸ்அப் லிங்க் நேரடியாக பட்டனில் இணைக்கப்படுகிறது
+        let waButton = document.getElementById('waBtn');
+        waButton.href = `https://whatsapp.com{encodeURIComponent(shareText)}`;
+        waButton.style.display = 'block';
+    }
+</script>
+</body>
+</html>
