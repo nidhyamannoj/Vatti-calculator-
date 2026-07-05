@@ -47,39 +47,30 @@
             margin-bottom: 8px;
         }
 
-        .segmented-control {
+        /* Clean Traditional Radio Row Layout */
+        .radio-group-row {
             display: flex;
-            background: #f1f3f5;
-            padding: 4px;
-            border-radius: 8px;
+            flex-direction: row;
+            gap: 16px;
             margin-bottom: 20px;
-            border: 1px solid #e9ecef;
+            padding: 4px 0;
         }
 
-        .segmented-control label {
-            flex: 1;
-            text-align: center;
-        }
-
-        .segmented-control input[type="radio"] {
-            display: none;
-        }
-
-        .segmented-control span {
-            display: block;
-            padding: 10px;
-            font-size: 13px;
-            font-weight: 700;
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
             color: #495057;
-            border-radius: 6px;
             cursor: pointer;
-            transition: all 0.2s ease;
         }
 
-        .segmented-control input[type="radio"]:checked + span {
-            background: #ffffff;
-            color: #b31d1d;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        .radio-option input[type="radio"] {
+            width: auto;
+            accent-color: #b31d1d;
+            cursor: pointer;
+            transform: scale(1.15);
         }
 
         .form-group {
@@ -212,18 +203,19 @@
         }
     </style>
 </head>
-    <body>
+<body>
 <div class="calculator-card">
     <div class="title" id="calcTitle">வட்டி கணக்கீட்டாளர்</div>
     
     <form id="vattiForm" onsubmit="runCalculation(event)">
+        <!-- Clean Radio Set 1: Calculation Mode -->
         <span class="section-label" id="lblCalcMethod">கணக்கீடு முறை:</span>
-        <div class="segmented-control">
-            <label>
+        <div class="radio-group-row">
+            <label class="radio-option">
                 <input type="radio" name="interestMode" value="thani" checked onchange="switchMode('thani')">
                 <span id="optThani">தனி வட்டி</span>
             </label>
-            <label>
+            <label class="radio-option">
                 <input type="radio" name="interestMode" value="kootu" onchange="switchMode('kootu')">
                 <span id="optKootu">கூட்டு வட்டி</span>
             </label>
@@ -234,13 +226,14 @@
             <input type="text" id="asal" placeholder="எ.கா. 1,00,000" required oninput="handleAsalInput(this)">
         </div>
 
+        <!-- Clean Radio Set 2: Interest Type -->
         <span class="section-label" id="lblVattiVagai">வட்டி வகை:</span>
-        <div class="segmented-control">
-            <label>
+        <div class="radio-group-row">
+            <label class="radio-option">
                 <input type="radio" name="rateCategory" value="rupee" checked onchange="adaptPlaceholder()">
                 <span id="optRupee">ரூபாய் / பைசா வட்டி (மாதத்திற்கு)</span>
             </label>
-            <label>
+            <label class="radio-option">
                 <input type="radio" name="rateCategory" value="bank" onchange="adaptPlaceholder()">
                 <span id="optBank">Bank வட்டி % (ஆண்டிற்கு)</span>
             </label>
@@ -285,7 +278,6 @@
 </div>
 
 <script>
-
     let currentLang = 'ta';
     let currentMode = 'thani'; 
     let generatedSummaryText = "";
