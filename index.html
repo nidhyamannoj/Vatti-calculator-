@@ -105,8 +105,15 @@
             border-color: #b31d1d;
         }
 
+        /* Clean Side-by-Side Button Layout Container Grid */
+        .btn-container-grid {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
         .submit-btn {
-            width: 100%;
+            flex: 2;
             background-color: #b31d1d;
             color: #ffffff;
             border: none;
@@ -115,13 +122,31 @@
             font-weight: bold;
             border-radius: 8px;
             cursor: pointer;
-            margin-top: 8px;
             height: 50px;
             transition: background-color 0.2s;
         }
 
         .submit-btn:hover {
             background-color: #911616;
+        }
+
+        .reset-btn {
+            flex: 1;
+            background-color: #f1f3f5;
+            color: #495057;
+            border: 1px solid #ced4da;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            height: 50px;
+            transition: all 0.2s ease;
+        }
+
+        .reset-btn:hover {
+            background-color: #e2e6ea;
+            color: #212529;
         }
 
         .result-box {
@@ -257,7 +282,11 @@
             <input type="date" id="endDate" required>
         </div>
 
-        <button type="submit" class="submit-btn" id="btnCalculate">வட்டியைக் கணக்கிடு</button>
+        <!-- Dual Combined Call Trigger Actions Button Row Container Grid Layout -->
+        <div class="btn-container-grid">
+            <button type="submit" class="submit-btn" id="btnCalculate">வட்டியைக் கணக்கிடு</button>
+            <button type="button" class="reset-btn" id="btnReset" onclick="resetCalculatorForm()">மறுஅமைப்பு</button>
+        </div>
     </form>
 
     <div class="result-box" id="resultDisplay"></div>
@@ -285,6 +314,7 @@
             start: "தொடங்கிய தேதி:",
             end: "முடிவுற்ற தேதி:",
             btn: "வட்டியைக் கணக்கிடு",
+            btnReset: "மறுஅமைப்பு",
             toggle: "Switch to English",
             freqLabel: "கூட்டு வட்டி முறை:",
             placeholderRupee: "எ.கா. 2 (ரூ.2 வட்டிக்கு)",
@@ -308,6 +338,7 @@
             start: "Start Date:",
             end: "End Date:",
             btn: "Calculate Interest",
+            btnReset: "Reset",
             toggle: "தமிழில் மாற்றவும்",
             freqLabel: "Compounding Period:",
             placeholderRupee: "e.g. 2 (for Rs.2 Vatti)",
@@ -353,6 +384,14 @@
         inputElement.setSelectionRange(cursorPosition, cursorPosition);
     }
 
+    function adaptPlaceholder() {
+        const type = document.getElementById('vattiVagai').value;
+        const rateInput = document.getElementById('vattiRate');
+        if (translations && translations[currentLang]) {
+            rateInput.placeholder = (type === 'rupee') ? translations[currentLang].placeholderRupee : translations[currentLang].placeholderBank;
+        }
+    }
+
     function switchMode(mode) {
         currentMode = mode;
         const freqGroup = document.getElementById('compoundFreqGroup');
@@ -375,6 +414,7 @@
         document.getElementById('lblStartDate').innerText = t.start;
         document.getElementById('lblEndDate').innerText = t.end;
         document.getElementById('btnCalculate').innerText = t.btn;
+        document.getElementById('btnReset').innerText = t.btnReset;
         document.getElementById('langToggle').innerText = t.toggle;
         document.getElementById('lblFreq').innerText = t.freqLabel;
         document.getElementById('optThani').innerText = t.optThani;
@@ -387,14 +427,21 @@
         document.getElementById('optAnnually').innerText = t.optAnnually;
         document.getElementById('btnShareText').innerText = t.shareBtn;
         
-        // Dynamic state-clean rules flushing past outputs upon toggle trigger execution
+        clearActiveCalculations();
+    }
+
+    function clearActiveCalculations() {
         generatedSummaryText = "";
         const resultCard = document.getElementById('resultDisplay');
         resultCard.classList.remove('active');
         resultCard.innerHTML = "";
         document.getElementById('btnShare').style.display = 'none';
-        
-        adaptPlaceholder();
+    }
+
+    function resetCalculatorForm() {
+        document.getElementById('vattiForm').reset();
+        switchMode('thani');
+        clearActiveCalculations();
     }
     function runCalculation(event) {
         event.preventDefault();
@@ -491,12 +538,6 @@
         }
 
         document.getElementById('btnShare').style.display = 'flex';
-    }
-
-    function adaptPlaceholder() {
-        const type = document.getElementById('vattiVagai').value;
-        const rateInput = document.getElementById('vattiRate');
-        rateInput.placeholder = (type === 'rupee') ? translations[currentLang].placeholderRupee : translations[currentLang].placeholderBank;
     }
 
     function sendWhatsApp() {
