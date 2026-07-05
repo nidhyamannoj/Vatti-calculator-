@@ -262,7 +262,7 @@
 
     <div class="result-box" id="resultDisplay"></div>
     
-    <!-- Hidden native hidden form container block bypassing strict popup blocks dynamically -->
+    <!-- Hidden form gateway bypassing pop-up blockers natively -->
     <form id="whatsappForm" action="https://whatsapp.com" method="GET" target="_blank" style="display:none;">
         <input type="hidden" name="text" id="whatsappText">
     </form>
@@ -415,7 +415,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         adaptPlaceholder();
     });
-        function runCalculation(event) {
+    function runCalculation(event) {
         event.preventDefault();
         
         const principal = parseRawNumber(document.getElementById('asal').value);
@@ -512,7 +512,6 @@
         document.getElementById('btnShare').style.display = 'flex';
     }
 
-    // Secure form gateway bypassing dynamic asynchronous pop-up blockers completely
     function sendWhatsApp() {
         if (!generatedSummaryText) return;
         document.getElementById('whatsappText').value = generatedSummaryText;
@@ -521,4 +520,3 @@
 </script>
 </body>
 </html>
-
