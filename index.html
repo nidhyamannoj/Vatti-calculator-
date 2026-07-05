@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>வட்டி கணக்கீட்டாளர் - Interest Calculator</title>
+    <title>வட்டி கணக்கீட்டாளர்</title>
     <style>
         * {
             box-sizing: border-box;
@@ -48,11 +48,10 @@
             font-weight: 700;
             color: #555c66;
             margin-bottom: 10px;
-            text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        /* Modern Segmented Choice Tabs Control */
+        /* Segmented Choice Capsular Track */
         .segmented-control {
             display: flex;
             background: #f1f3f5;
@@ -155,7 +154,7 @@
             box-shadow: 0 6px 20px rgba(179, 29, 29, 0.3);
         }
 
-        /* Dashboard-Style Visual Report Output Card */
+        /* Dashboard-Style Visual Report Card */
         .result-box {
             margin-top: 26px;
             padding: 20px;
@@ -223,21 +222,6 @@
             box-shadow: 0 6px 18px rgba(37, 211, 102, 0.3);
         }
 
-        .switch-lang {
-            display: block;
-            text-align: center;
-            margin-top: 24px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #6c757d;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .switch-lang:hover {
-            color: #b31d1d;
-        }
-
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -247,124 +231,84 @@
 <body>
 
 <div class="calculator-card">
-    <div class="title" id="calcTitle">வட்டி கணக்கீட்டாளர்</div>
+    <div class="title">வட்டி கணக்கீட்டாளர்</div>
     
     <form id="vattiForm" onsubmit="runCalculation(event)">
-        <!-- Tab Select 1: Method -->
-        <span class="section-label" id="lblCalcMethod">கணக்கீடு முறை (Calculation Mode):</span>
+        <!-- Calculation Mode Toggles -->
+        <span class="section-label">கணக்கீடு முறை:</span>
         <div class="segmented-control">
             <label>
                 <input type="radio" name="interestMode" value="thani" checked onchange="switchMode('thani')">
-                <span id="optThani">தனி வட்டி (Simple)</span>
+                <span>தனி வட்டி</span>
             </label>
             <label>
                 <input type="radio" name="interestMode" value="kootu" onchange="switchMode('kootu')">
-                <span id="optKootu">கூட்டு வட்டி (Compound)</span>
+                <span>கூட்டு வட்டி</span>
             </label>
         </div>
 
-        <!-- Real-Time Masking Principal Field -->
+        <!-- Real-Time Masking Input Box -->
         <div class="form-group">
-            <label id="lblAsal">அசல் தொகை (Asal)</label>
+            <label>அசல் தொகை (Asal)</label>
             <input type="text" id="asal" placeholder="எ.கா. 1,00,000" required oninput="handleAsalInput(this)">
         </div>
 
-        <!-- Tab Select 2: Category Type -->
-        <span class="section-label" id="lblVattiVagai">வட்டி வகை (Interest Type):</span>
+        <!-- Category Configurations Toggles -->
+        <span class="section-label">வட்டி வகை:</span>
         <div class="segmented-control">
             <label>
                 <input type="radio" name="rateCategory" value="rupee" checked onchange="adaptPlaceholder()">
-                <span id="optRupee">ரூபாய் / பைசா வட்டி (மாதத்திற்கு)</span>
+                <span>ரூபாய் / பைசா வட்டி (மாதத்திற்கு)</span>
             </label>
             <label>
                 <input type="radio" name="rateCategory" value="bank" onchange="adaptPlaceholder()">
-                <span id="optBank">Bank வட்டி % (ஆண்டிற்கு)</span>
+                <span>Bank வட்டி % (ஆண்டிற்கு)</span>
             </label>
         </div>
 
-        <!-- Interest Rate Selector -->
+        <!-- Interest Rate Box -->
         <div class="form-group">
-            <label id="lblVattiVigitham">வட்டி விகிதம்</label>
+            <label>வட்டி விகிதம்</label>
             <input type="text" id="vattiRate" placeholder="எ.கா. 2 (ரூ.2 வட்டிக்கு)" required>
         </div>
 
-        <!-- Compound Interval Dropdown -->
+        <!-- Compound Interval Dropdown Options -->
         <div class="form-group" id="compoundFreqGroup" style="display: none;">
-            <label id="lblFreq">கூட்டு வட்டி முறை (Compounding Period)</label>
+            <label>கூட்டு வட்டி முறை</label>
             <select id="compoundFreq">
-                <option value="12">மாதமொருமுறை (Monthly)</option>
-                <option value="4">மூன்று மாதமொருமுறை (Quarterly)</option>
-                <option value="2">ஆறு மாதமொருமுறை (Half-Yearly)</option>
-                <option value="1" selected>ஆண்டிற்கு ஒருமுறை (Annually)</option>
+                <option value="12">மாதமொருமுறை</option>
+                <option value="4">மூன்று மாதமொருமுறை</option>
+                <option value="2">ஆறு மாதமொருமுறை</option>
+                <option value="1" selected>ஆண்டிற்கு ஒருமுறை</option>
             </select>
         </div>
 
-        <!-- Chronology Dates Picker Fields -->
+        <!-- Dates fields -->
         <div class="form-group">
-            <label id="lblStartDate">தொடங்கிய தேதி</label>
+            <label>தொடங்கிய தேதி</label>
             <input type="date" id="startDate" required>
         </div>
 
         <div class="form-group">
-            <label id="lblEndDate">முடிவுற்ற தேதி</label>
+            <label>முடிவுற்ற தேதி</label>
             <input type="date" id="endDate" required>
         </div>
 
-        <button type="submit" class="submit-btn" id="btnCalculate">வட்டியைக் கணக்கிடு</button>
+        <button type="submit" class="submit-btn">வட்டியைக் கணக்கிடு</button>
     </form>
 
     <div class="result-box" id="resultDisplay"></div>
     
+    <!-- Explicit Formless Redirection Button Controller -->
     <button type="button" id="btnShare" class="share-btn" onclick="sendWhatsApp()">
-
 ---
 
-### 📋 Copy Clipboard 2 (Part 2: Complete Calculation Logic & WhatsApp Dispatch)
+### 📋 Copy Clipboard 2 (Part 2: Pure Tamil Computational Formulas & Input Mask Engine)
 
 ```html
 <script>
-    let currentLang = 'ta';
     let currentMode = 'thani'; 
     let generatedSummaryText = "";
-
-    const translations = {
-        ta: {
-            title: "வட்டி கணக்கீட்டாளர்",
-            asal: "அசல் தொகை (Asal)",
-            vagal: "வட்டி வகை (Interest Type):",
-            calcMethod: "கணக்கீடு முறை (Calculation Mode):",
-            vigitham: "வட்டி விகிதம்",
-            start: "தொடங்கிய தேதி",
-            end: "முடிவுற்ற தேதி",
-            btn: "வட்டியைக் கணக்கிடு",
-            toggle: "Switch to English",
-            freqLabel: "கூட்டு வட்டி முறை (Compounding Period)",
-            placeholderRupee: "எ.கா. 2 (ரூ.2 வட்டிக்கு)",
-            placeholderBank: "எ.கா. 7.5 (% ஆண்டிற்கு)",
-            optThani: "தனி வட்டி (Simple)",
-            optKootu: "கூட்டு வட்டி (Compound)",
-            optRupee: "ரூபாய் / பைசா வட்டி",
-            optBank: "Bank வட்டி %"
-        },
-        en: {
-            title: "Interest Calculator",
-            asal: "Principal Amount (Asal)",
-            vagal: "Interest Type:",
-            calcMethod: "Calculation Mode:",
-            vigitham: "Interest Rate",
-            start: "Start Date",
-            end: "End Date",
-            btn: "Calculate Interest",
-            toggle: "தமிழில் மாற்றவும்",
-            freqLabel: "Compounding Period",
-            placeholderRupee: "e.g. 2 (for Rs.2 Vatti)",
-            placeholderBank: "e.g. 7.5 (% Per Annum)",
-            optThani: "Simple Interest",
-            optKootu: "Compound Interest",
-            optRupee: "Rupee / Paisa Vatti",
-            optBank: "Bank Interest %"
-        }
-    };
 
     function parseRawNumber(str) {
         return parseFloat(str.replace(/,/g, '')) || 0;
@@ -416,29 +360,7 @@
     function adaptPlaceholder() {
         const type = getSelectedRateCategory();
         const rateInput = document.getElementById('vattiRate');
-        rateInput.placeholder = (type === 'rupee') ? translations[currentLang].placeholderRupee : translations[currentLang].placeholderBank;
-    }
-
-    function toggleLanguage() {
-        currentLang = (currentLang === 'ta') ? 'en' : 'ta';
-        const t = translations[currentLang];
-        
-        document.getElementById('calcTitle').innerText = t.title;
-        document.getElementById('lblCalcMethod').innerText = t.calcMethod;
-        document.getElementById('lblAsal').innerText = t.asal;
-        document.getElementById('lblVattiVagai').innerText = t.vagal;
-        document.getElementById('lblVattiVigitham').innerText = t.vigitham;
-        document.getElementById('lblStartDate').innerText = t.start;
-        document.getElementById('lblEndDate').innerText = t.end;
-        document.getElementById('btnCalculate').innerText = t.btn;
-        document.getElementById('langToggle').innerText = t.toggle;
-        document.getElementById('lblFreq').innerText = t.freqLabel;
-        document.getElementById('optThani').innerText = t.optThani;
-        document.getElementById('optKootu').innerText = t.optKootu;
-        document.getElementById('optRupee').innerText = t.optRupee;
-        document.getElementById('optBank').innerText = t.optBank;
-        
-        adaptPlaceholder();
+        rateInput.placeholder = (type === 'rupee') ? "எ.கா. 2 (ரூ.2 வட்டிக்கு)" : "எ.கா. 7.5 (% ஆண்டிற்கு)";
     }
 
     function runCalculation(event) {
@@ -456,7 +378,7 @@
         const end = new Date(endStr);
         
         if (end < start) {
-            alert(currentLang === 'ta' ? "முடிவுற்ற தேதி தொடங்கிய தேதியை விட அதிகமாக இருக்க வேண்டும்!" : "End date must be after Start date!");
+            alert("முடிவுற்ற தேதி தொடங்கிய தேதியை விட அதிகமாக இருக்க வேண்டும்!");
             return;
         }
 
@@ -481,9 +403,7 @@
 
         let interest = 0;
         let totalAmount = 0;
-        const modeLabelText = (currentMode === 'thani') ? 
-            (currentLang === 'ta' ? "தனி வட்டி" : "Simple Interest") : 
-            (currentMode === 'kootu' ? (currentLang === 'ta' ? "கூட்டு வட்டி" : "Compound Interest") : "");
+        const modeLabelText = (currentMode === 'thani') ? "தனி வட்டி" : "கூட்டு வட்டி";
 
         if (currentMode === 'thani') {
             interest = (principal / 100) * monthlyRateConverted * totalMonths;
@@ -502,33 +422,21 @@
         const display = document.getElementById('resultDisplay');
         display.classList.add('active');
 
-        const durationTextString = currentLang === 'ta' ? 
-            `${years} வருடம், ${months} மாதம், ${days} நாட்கள்` : 
-            `${years} Year(s), ${months} Month(s), ${days} Day(s)`;
+        const durationTextString = `${years} வருடம், ${months} மாதம், ${days} நாட்கள்`;
 
         const formattedPrincipal = formatIndianCurrency(principal);
         const formattedInterest = formatIndianCurrency(interest);
         const formattedTotal = formatIndianCurrency(totalAmount);
 
-        if (currentLang === 'ta') {
-            display.innerHTML = `
-                <div class="result-line"><span>கணக்கீடு முறை</span><span class="result-value">${modeLabelText}</span></div>
-                <div class="result-line"><span>அசல் தொகை</span><span class="result-value">₹${formattedPrincipal}</span></div>
-                <div class="result-line"><span>கால அளவு</span><span class="result-value">${durationTextString}</span></div>
-                <div class="result-line"><span>வட்டித் தொகை</span><span class="result-value highlight">₹${formattedInterest}</span></div>
-                <div class="result-line"><span>மொத்தத் தொகை</span><span class="result-value highlight">₹${formattedTotal}</span></div>
-            `;
-            generatedSummaryText = `*வட்டி விபரங்கள் (${modeLabelText})*\n\nஅசல் தொகை: ₹${formattedPrincipal}\nகால அளவு: ${durationTextString}\nவட்டித் தொகை: ₹${formattedInterest}\nமொத்தத் தொகை: ₹${formattedTotal}`;
-        } else {
-            display.innerHTML = `
-                <div class="result-line"><span>Calculation Type</span><span class="result-value">${modeLabelText}</span></div>
-                <div class="result-line"><span>Principal Amount</span><span class="result-value">₹${formattedPrincipal}</span></div>
-                <div class="result-line"><span>Duration</span><span class="result-value">${durationTextString}</span></div>
-                <div class="result-line"><span>Interest Amount</span><span class="result-value highlight">₹${formattedInterest}</span></div>
-                <div class="result-line"><span>Total Amount</span><span class="result-value highlight">₹${formattedTotal}</span></div>
-            `;
-            generatedSummaryText = `*Interest Details (${modeLabelText})*\n\nPrincipal: ₹${formattedPrincipal}\nDuration: ${durationTextString}\nInterest Amount: ₹${formattedInterest}\nTotal Amount: ₹${formattedTotal}`;
-        }
+        display.innerHTML = `
+            <div class="result-line"><span>கணக்கீடு முறை</span><span class="result-value">${modeLabelText}</span></div>
+            <div class="result-line"><span>அசல் தொகை</span><span class="result-value">₹${formattedPrincipal}</span></div>
+            <div class="result-line"><span>கால அளவு</span><span class="result-value">${durationTextString}</span></div>
+            <div class="result-line"><span>வட்டித் தொகை</span><span class="result-value highlight">₹${formattedInterest}</span></div>
+            <div class="result-line"><span>மொத்தத் தொகை</span><span class="result-value highlight">₹${formattedTotal}</span></div>
+        `;
+        
+        generatedSummaryText = `*வட்டி விபரங்கள் (${modeLabelText})*\n\nஅசல் தொகை: ₹${formattedPrincipal}\nகால அளவு: ${durationTextString}\nவட்டித் தொகை: ₹${formattedInterest}\nமொத்தத் தொகை: ₹${formattedTotal}`;
 
         document.getElementById('btnShare').style.display = 'flex';
     }
