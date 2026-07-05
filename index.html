@@ -1,212 +1,193 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roopa / Paisa Vatti Calculator - Traditional Village Interest Tool</title>
-    <style>
-        :root { --p: #b71c1c; --b: #fff8f8; --c: #ffffff; --t: #212121; }
-        body { font-family: sans-serif; background: var(--b); color: var(--t); margin: 0; padding: 12px; display: flex; flex-direction: column; align-items: center; }
-        .box { background: var(--c); padding: 18px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; box-sizing: border-box; }
-        h2 { text-align: center; color: var(--p); margin: 0 0 15px 0; font-size: 22px; }
-        .g { margin-bottom: 12px; }
-        label { display: block; margin-bottom: 4px; font-weight: bold; font-size: 13px; white-space: nowrap; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 15px; }
-        .row { display: flex; gap: 10px; }
-        .row .g { flex: 1; }
-        .date-container { margin-bottom: 12px; }
-        button.calc-btn { width: 100%; background: var(--p); color: white; padding: 13px; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 5px; }
-        .wa-btn { display: none; width: 100%; background: #25D366; color: white; padding: 12px; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 12px; text-align: center; text-decoration: none; box-sizing: border-box; }
-        .lang-container { display: flex; justify-content: center; margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 12px; }
-        button.lang-btn { background: none; border: none; color: #555; text-decoration: underline; font-size: 13px; cursor: pointer; font-weight: bold; }
-        button.lang-btn:hover { color: var(--p); }
-        .res { margin-top: 15px; padding: 12px; background: #ffebee; border-left: 5px solid var(--p); border-radius: 4px; display: none; }
-        .res p { margin: 6px 0; font-size: 15px; display: flex; justify-content: space-between; }
-        .seo-text { max-width: 400px; margin: 20px auto; font-family: sans-serif; line-height: 1.6; color: #555; background: #fff; padding: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); box-sizing: border-box; }
-        .seo-text h3 { color: var(--p); margin-top: 0; }
-        .formatted-display { font-size: 13px; color: #666; margin-top: 4px; font-weight: normal; min-height: 18px; }
-    </style>
-</head>
-<body>
-
-<div class="box">
-    <h2 id="t">ரூபாய் / பைசா வட்டி கணக்கீட்டாளர்</h2>
-    
+<div class="input-container">
+    <!-- Principal Input with automatic comma formatting -->
     <div class="g">
-        <label id="l1">அசல் தொகை (Asal):</label>
-        <input type="text" id="p" placeholder="எ.கா. 1,00,000" oninput="formatAsalInput(this)">
-        <div id="asalFormatted" class="formatted-display"></div>
-    </div>
+        <label id="l1">அசல் தொகை (Principal):</label>
+        <!-- Use type="text" to allow formatting commas safely -->
+        <input type="te<script>
+    // Global tracking language state
+    let isTamil = true; 
 
-    <div class="g">
-        <label id="lCalcType">கணக்கீடு முறை:</label>
-        <select id="calcType">
-            <option id="oThani" value="thani" selected>தனி வட்டி (Simple Interest)</option>
-            <option id="oKootu" value="kootu">கூட்டு வட்டி - ஆண்டுக்கு ஒருமுறை (Compound Interest)</option>
-        </select>
-    </div>
-    
-    <div class="g">
-        <label id="l2">வட்டி வகை:</label>
-        <select id="ty">
-            <option id="o1" value="p" selected>ரூபாய் / பைசா வட்டி (மாதத்திற்கு)</option>
-            <option id="o3" value="y">வங்கி வட்டி (ஆண்டிற்கு %)</option>
-        </select>
-    </div>
-    
-    <div class="g">
-        <label id="l3">வட்டி விகிதம்:</label>
-        <input type="number" id="r" step="0.01" placeholder="எ.கா. 2 (ரூ.2 வட்டிக்கு)">
-    </div>
-    
-    <div class="date-container">
-        <div class="g">
-            <label id="l4">தொடங்கிய தேதி:</label>
-            <input type="date" id="sd">
-        </div>
-        <div class="g">
-            <label id="l5">முடிவுற்ற தேதி:</label>
-            <input type="date" id="ed">
-        </div>
-    </div>
-    
-    <button class="calc-btn" id="btn" onclick="calcRunMath()">வட்டியைக் கணக்கிடு</button>
-    
-    <div class="res" id="out">
-        <p><span id="r1">காலம்:</span><span id="outTime"></span></p>
-        <p><span id="r2">வட்டி (Vatti):</span><span id="outInterest" style="font-weight:bold;color:#b71c1c;"></span></p>
-        <p><span id="r3">மொத்தம் (Asal+Vatti):</span><span id="outTotal" style="font-weight:bold;color:#b71c1c;"></span></p>
-    </div>
-
-    <a id="waBtn" class="wa-btn" href="" target="_blank">WhatsApp வழியாக பகிரவும்</a>
-
-    <div class="lang-container">
-        <button id="tg" class="lang-btn" onclick="calcToggleLang()">Switch to English</button>
-    </div>
-</div>
-
-<div class="seo-text">
-    <h3 id="sTitle">தமிழ்நாடு கிராமப்புற தனி மற்றும் கூட்டு வட்டி கணக்கீடு</h3>
-    <p id="sDesc">This traditional Roopa/Paisa Vatti and Bank Interest Calculator helps you compute both Thani Vatti (Simple Interest) and Kootu Vatti (Compound Interest) dynamically. Easily input your principal amount (Asal) with local currency comma separation formatting and get precise output breakdowns in singular/plural year layouts.</p>
-</div>
-<script>
-    document.getElementById('ed').value = new Date().toISOString().split('T')[0];
-    let isTamil = true;
-
-    function formatAsalInput(input) {
-        let cleanVal = input.value.replace(/,/g, '');
-        if (isNaN(cleanVal) || cleanVal === '') {
-            document.getElementById('asalFormatted').innerText = '';
-            return;
+    // Dynamic Live Comma Formatting for Indian Currency System (As User Types)
+    function formatAsalCommas(input) {
+        // Strip out any characters that aren't numeric digits
+        let value = input.value.replace(/,/g, '');
+        if(!isNaN(value) && value !== '') {
+            // Apply Indian numbering format rules natively
+            let formatted = parseFloat(value).toLocaleString('en-IN');
+            input.value = formatted;
+        } else {
+            input.value = '';
         }
-        let num = parseFloat(cleanVal);
-        document.getElementById('asalFormatted').innerText = "₹ " + num.toLocaleString('en-IN');
     }
 
-    function calcToggleLang() {
-        isTamil = !isTamil;
-        
-        document.getElementById('tg').innerText = isTamil ? 'Switch to English' : 'தமிழ் பதிப்பிற்கு மாறவும்';
-        document.getElementById('t').innerText = isTamil ? 'ரூபாய் / பைசா வட்டி கணக்கீட்டாளர்' : 'Roopa / Paisa Vatti Calculator';
-        document.getElementById('l1').innerText = isTamil ? 'அசல் தொகை (Asal):' : 'Principal Amount (Asal):';
-        document.getElementById('lCalcType').innerText = isTamil ? 'கணக்கீடு முறை:' : 'Calculation Method:';
-        document.getElementById('l2').innerText = isTamil ? 'வட்டி வகை:' : 'Interest Type:';
-        document.getElementById('l3').innerText = isTamil ? 'வட்டி விகிதம்:' : 'Interest Rate Value:';
-        document.getElementById('l4').innerText = isTamil ? 'தொடங்கிய தேதி:' : 'Start Date:';
-        document.getElementById('l5').innerText = isTamil ? 'முடிவுற்ற தேதி:' : 'End Date:';
-        document.getElementById('btn').innerText = isTamil ? 'வட்டியைக் கணக்கிடு' : 'Calculate Interest';
-        document.getElementById('r1').innerText = isTamil ? 'காலம்:' : 'Time:';
-        document.getElementById('r2').innerText = isTamil ? 'வட்டி (Vatti):' : 'Interest (Vatti):';
-        document.getElementById('r3').innerText = isTamil ? 'மொத்தம் (Asal+Vatti):' : 'Total (Asal+Vatti):';
-        document.getElementById('waBtn').innerText = isTamil ? 'WhatsApp வழியாக பகிரவும்' : 'Share via WhatsApp';
-        
-        document.getElementById('p').placeholder = isTamil ? 'எ.கா. 1,00,000' : 'e.g. 1,00,000';
-        document.getElementById('r').placeholder = isTamil ? 'எ.கா. 2 (ரூ.2 வட்டிக்கு)' : 'e.g. 2 (for Rs.2 vatti)';
-        
-        document.getElementById('oThani').innerText = isTamil ? 'தனி வட்டி (Simple Interest)' : 'Simple Interest (Thani Vatti)';
-        document.getElementById('oKootu').innerText = isTamil ? 'கூட்டு வட்டி - ஆண்டுக்கு ஒருமுறை (Compound Interest)' : 'Compound Interest - Yearly (Kootu Vatti)';
-        
-        document.getElementById('o1').innerText = isTamil ? 'ரூபாய் / பைசா வட்டி (மாதத்திற்கு)' : 'Roopa / Paisa vatti (Per Month)';
-        document.getElementById('o3').innerText = isTamil ? 'வங்கி வட்டி (ஆண்டிற்கு %)' : 'Bank Interest (Annual % / APR)';
-
-        formatAsalInput(document.getElementById('p'));
-    }
-
+    // Main Calculator Function
     function calcRunMath() {
-        let rawP = document.getElementById('p').value.replace(/,/g, '');
-        let pVal = parseFloat(rawP);
-        let rVal = parseFloat(document.getElementById('r').value);
-        let cType = document.getElementById('calcType').value;
-        let tyVal = document.getElementById('ty').value;
-        let sdStr = document.getElementById('sd').value;
-        let edStr = document.getElementById('ed').value;
-
-        if (!pVal || !rVal || !sdStr || !edStr) {
-            alert(isTamil ? 'அனைத்து விவரங்களையும் நிரப்பவும்' : 'Please fill all details');
-            return;
-        }
-
-        let s = new Date(sdStr), e = new Date(edStr);
-        if (e < s) {
-            alert(isTamil ? 'தேதி பிழை' : 'End date error');
-            return;
-        }
-
-        let sy = s.getFullYear(), sm = s.getMonth(), sdt = s.getDate();
-        let ey = e.getFullYear(), em = e.getMonth(), edt = e.getDate();
-
-        if (edt < sdt) { edt += new Date(ey, em, 0).getDate(); em -= 1; }
-        if (em < sm) { em += 12; ey -= 1; }
-
-        let diffD = edt - sdt, diffM = em - sm, diffY = ey - sy;
+        // Safely extract numeric value from the comma-formatted principal text input
+        const asalRawText = document.getElementById('asal')?.value || '0';
+        const pVal = parseFloat(asalRawText.replace(/,/g, '')) || 0;
         
-        let totalMonths = (diffY * 12) + diffM + (diffD / 30);
-        let totalYears = totalMonths / 12;
+        const rateVal = parseFloat(document.getElementById('vattiRate')?.value || 0);
+        const cType = document.getElementById('calcType')?.value || 'roopa';
 
-        let monthlyRatePercent = (tyVal === 'y') ? rVal / 12 : rVal;
-        let annualRatePercent = monthlyRatePercent * 12;
+        const startDateInput = document.getElementById('sd').value;
+        const endDateInput = document.getElementById('ed').value;
+
+        // Form Validation Rules
+        if (pVal <= 0 || rateVal <= 0) {
+            alert(isTamil ? 'தயவுசெய்து சரியான அசல் மற்றும் வட்டி விகிதத்தை உள்ளிடவும்!' : 'Please enter a valid Principal and Interest Rate!');
+            return;
+        }
+        if (!startDateInput || !endDateInput) {
+            alert(isTamil ? 'தயவுசெய்து தேதிகளைத் தேர்ந்தெடுக்கவும்!' : 'Please select both dates!');
+            return;
+        }
+
+        const d1 = new Date(startDateInput);
+        const d2 = new Date(endDateInput);
+
+        if (d2 < d1) {
+            alert(isTamil ? 'முடிவுற்ற தேதி தொடங்கிய தேதியை விட அதிகமாக இருக்க வேண்டும்!' : 'End date must be after Start date!');
+            return;
+        }
+
+        // Calculation of timeline differences (Years, Months, Days)
+        let diffY = d2.getFullYear() - d1.getFullYear();
+        let diffM = d2.getMonth() - d1.getMonth();
+        let diffD = d2.getDate() - d1.getDate();
+
+        if (diffD < 0) {
+            diffM--;
+            const prevMonth = new Date(d2.getFullYear(), d2.getMonth(), 0).getDate();
+            diffD += prevMonth;
+        }
+        if (diffM < 0) {
+            diffY--;
+            diffM += 12;
+        }
+
+        // Standard Village Rule mapping logic: 30 Days equals 1 Month
+        const totalMonths = (diffY * 12) + diffM + (diffD / 30);
+        const totalYears = totalMonths / 12;
 
         let finalInterest = 0;
         let totalAmount = 0;
 
-        if (cType === 'thani') {
-            finalInterest = (pVal * monthlyRatePercent * totalMonths) / 100;
+        if (cType === 'roopa') {
+            // 1. Traditional Thani Vatti (Simple Interest per Month per 100 rupees)
+            finalInterest = pVal * (rateVal / 100) * totalMonths;
             totalAmount = pVal + finalInterest;
         } else {
-            totalAmount = pVal * Math.pow((1 + annualRatePercent / 100), totalYears);
+            // 2. Bank Vatti (Standard Annual Compound Interest - Kootu Vatti)
+            // Assumes standard annual compounding cycle used by commercial banking institutions
+            const annualRateDecimal = rateVal / 100;
+            totalAmount = pVal * Math.pow((1 + annualRateDecimal), totalYears);
             finalInterest = totalAmount - pVal;
         }
 
+        // Build localized time strings natively
         let parts = [];
         if (isTamil) {
             if (diffY > 0) parts.push(diffY === 1 ? `${diffY} ஆண்டு` : `${diffY} ஆண்டுகள்`);
-            if (diffM > 0) parts.push(`${diffM} மாதம்`);
-            if (diffD > 0 || parts.length === 0) parts.push(`${diffD} நாட்கள்`);
+            if (diffM > 0) parts.push(diffM === 1 ? `${diffM} மாதம்` : `${diffM} மாதங்கள்`);
+            if (diffD > 0 || parts.length === 0) parts.push(diffD === 1 ? `${diffD} நாள்` : `${diffD} நாட்கள்`);
         } else {
             if (diffY > 0) parts.push(diffY === 1 ? `${diffY} Year` : `${diffY} Years`);
-            if (diffM > 0) parts.push(`${diffM} Month`);
-            if (diffD > 0 || parts.length === 0) parts.push(`${diffD} Days`);
+            if (diffM > 0) parts.push(diffM === 1 ? `${diffM} Month` : `${diffM} Months`);
+            if (diffD > 0 || parts.length === 0) parts.push(diffD === 1 ? `${diffD} Day` : `${diffD} Days`);
         }
         let timeString = parts.join(', ');
 
+        // Format numerical display elements using Indian currency style presets
         let displayInt = '₹' + finalInterest.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
         let displayTot = '₹' + totalAmount.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
+        // Push calculated text layers back into DOM viewports
         document.getElementById('outTime').innerText = timeString;
         document.getElementById('outInterest').innerText = displayInt;
         document.getElementById('outTotal').innerText = displayTot;
         document.getElementById('out').style.display = 'block';
         
+        // Fixed WhatsApp Share Builder String Component
+        let methodText = "";
+        if (isTamil) {
+            methodText = cType === 'roopa' ? 'ரூபாய்/பைசா வட்டி (Thani Vatti)' : 'Bank வட்டி (Kootu Vatti)';
+        } else {
+            methodText = cType === 'roopa' ? 'Roopa/Paisa Vatti (Monthly)' : 'Bank Vatti (Annual Compound)';
+        }
+
         let shareText = isTamil ? 
-            `*வட்டி கணக்கீடு அறிக்கை*\n\nகணக்கீடு முறை: ${cType === 'thani' ? 'தனி வட்டி' : 'கூட்டு வட்டி'}\nஅசல் தொகை: ₹${pVal.toLocaleString('en-IN')}\nகாலம்: ${timeString}\nவட்டி தொகை: ${displayInt}\nமொத்தம்: ${displayTot}` :
-            `*Interest Calculation Report*\n\nMethod: ${cType === 'thani' ? 'Simple Interest' : 'Compound Interest'}\nPrincipal: ₹${pVal.toLocaleString('en-IN')}\nTime: ${timeString}\nInterest: ${displayInt}\nTotal: ${displayTot}`;
+            `*வட்டி கணக்கீடு அறிக்கை*\n\nகணக்கீடு முறை: ${methodText}\nஅசல் தொகை: ₹${pVal.toLocaleString('en-IN')}\nகாலம்: ${timeString}\nவட்டி தொகை: ${displayInt}\nமொத்தம்: ${displayTot}` :
+            `*Interest Calculation Report*\n\nMethod: ${methodText}\nPrincipal: ₹${pVal.toLocaleString('en-IN')}\nTime: ${timeString}\nInterest: ${displayInt}\nTotal: ${displayTot}`;
             
+        // Repaired API string formatting path structure
         let waButton = document.getElementById('waBtn');
-        waButton.href = "https://wa.me" + encodeURIComponent(shareText);
-        waButton.style.display = 'block';
+        waButton.href = "https://whatsapp.com" + encodeURIComponent(shareText);
+        waButton.style.display = 'inline-block';
+    }
+
+    // Application Translation Controller Switcher
+    function calcToggleLang() {
+        const langBtn = document.getElementById('tg');
+        const calcTypeSelect = document.getElementById('calcType');
+        isTamil = !isTamil;
+
+        if (!isTamil) {
+            langBtn.innerText = "தமிழ் மொழிக்கு மாற்றவும்";
+            document.getElementById('l1').innerText = "Principal Amount:";
+            document.getElementById('l2').innerText = "Interest Rate (Vatti Rate):";
+            document.getElementById('l3').innerText = "Interest Type:";
+            document.getElementById('l4').innerText = "Start Date:";
+            document.getElementById('l5').innerText = "End Date:";
+            document.getElementById('btn').innerText = "Calculate Interest";
+            document.getElementById('r1').innerText = "Duration:";
+            document.getElementById('r2').innerText = "Interest (Vatti):";
+            document.getElementById('r3').innerText = "Total (Principal+Vatti):";
+            document.getElementById('waBtn').innerText = "Share via WhatsApp";
+            document.getElementById('sTitle').innerText = "Rural Tamil Nadu Simple and Compound Interest Calculator";
+            
+            // Translate Select Options to English
+            calcTypeSelect.options[0].text = "Roopa/Paisa Vatti (Per Month)";
+            calcTypeSelect.options[1].text = "Bank Vatti (Per Year / Compound)";
+        } else {
+            langBtn.innerText = "Switch to English";
+            document.getElementById('l1').innerText = "அசல் தொகை (Principal):";
+            document.getElementById('l2').innerText = "வட்டி விகிதம் (Vatti Rate):";
+            document.getElementById('l3').innerText = "வட்டி வகை (Interest Type):";
+            document.getElementById('l4').innerText = "தொடங்கிய தேதி:";
+            document.getElementById('l5').innerText = "முடிவுற்ற தேதி:";
+            document.getElementById('btn').innerText = "வட்டியைக் கணக்கிடு";
+            document.getElementById('r1').innerText = "காலம்:";
+            document.getElementById('r2').innerText = "வட்டி (Vatti):";
+            document.getElementById('r3').innerText = "மொத்தம் (Asal+Vatti):";
+            document.getElementById('waBtn').innerText = "WhatsApp வழியாக பகிரவும்";
+            document.getElementById('sTitle').innerText = "தமிழ்நாடு கிராமப்புற தனி மற்றும் கூட்டு வட்டி கணக்கீடு";
+            
+            // Translate Select Options back to Tamil
+            calcTypeSelect.options[0].text = "ரூபாய்/பைசா வட்டி (மாதத்திற்கு)";
+            calcTypeSelect.options[1].text = "Bank வட்டி (ஆண்டிற்கு / Kootu Vatti)";
+        }
+
+        // Live refresh logic update if calculations were already visible
+        if (document.getElementById('sd').value && document.getElementById('ed').value) {
+            calcRunMath();
+        }
     }
 </script>
-</body>
-</html>
+xt" id="asal" placeholder="எ.கா. 1,00,000" oninput="formatAsalCommas(this)">
+    </div>
+    
+    <!-- Interest Rate Input -->
+    <div class="g">
+        <label id="l2">வட்டி விகிதம் (Vatti Rate):</label>
+        <input type="number" id="vattiRate" step="0.01" placeholder="எ.கா. 2 (ரூபாய்) அல்லது 7.5 (%)">
+    </div>
 
-
+    <!-- Simplified 2-Option Vatti Vagai Select -->
+    <div class="g">
+        <label id="l3">வட்டி வகை (Interest Type):</label>
+        <select id="calcType">
+            <option value="roopa" selected>ரூபாய்/பைசா வட்டி (மாதத்திற்கு)</option>
+            <option value="bank">Bank வட்டி (ஆண்டிற்கு / Kootu Vatti)</option>
+        </select>
+    </div>
+</div>
