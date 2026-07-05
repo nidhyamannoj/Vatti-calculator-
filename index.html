@@ -323,7 +323,6 @@
         return parseFloat(str.replace(/,/g, '')) || 0;
     }
 
-    // Bulletproof Indian Number System Comma Formatter Function
     function formatIndianCurrency(amount) {
         if (isNaN(amount)) return "0.00";
         let parts = amount.toFixed(2).split('.');
@@ -373,7 +372,6 @@
         if (freqGroup) {
             freqGroup.style.display = (mode === 'kootu') ? 'block' : 'none';
         }
-        
         adaptPlaceholder();
         document.getElementById('resultDisplay').classList.remove('active');
     }
@@ -490,7 +488,6 @@
         if (currentLang === 'ta') {
             outMessageText = "வட்டி விபரங்கள் (" + modeLabelText + ")\n\nஅசல் தொகை: ₹" + formattedPrincipal + "\nகால அளவு: " + durationTextString + "\nவட்டித் தொகை: ₹" + formattedInterest + "\nமொத்தத் தொகை: ₹" + formattedTotal;
             
-            // Embedding the link dynamically with the full text parameters already created safely
             display.innerHTML = '<div class="result-line"><span>கணக்கீடு முறை</span><span class="result-value">' + modeLabelText + '</span></div>' +
                 '<div class="result-line"><span>அசல் தொகை</span><span class="result-value">₹' + formattedPrincipal + '</span></div>' +
                 '<div class="result-line"><span>கால அளவு</span><span class="result-value">' + durationTextString + '</span></div>' +
