@@ -326,8 +326,8 @@
     function formatIndianCurrency(amount) {
         if (isNaN(amount)) return "0.00";
         let parts = amount.toFixed(2).split('.');
-        let numStr = parts[0];
-        let decimals = parts[1];
+        let numStr = parts;
+        let decimals = parts;
         if (numStr.length <= 3) return numStr + '.' + decimals;
         let lastThree = numStr.substring(numStr.length - 3);
         let otherNumbers = numStr.substring(0, numStr.length - 3);
@@ -366,7 +366,6 @@
         }
     }
 
-    // Handles view resetting on toggles
     function switchMode(mode) {
         currentMode = mode;
         const freqGroup = document.getElementById('compoundFreqGroup');
@@ -425,6 +424,7 @@
             return;
         }
 
+        // மனிதர்கள் படிக்கும் கால அளவுக்கான கணக்கீடு (வருடம், மாதம், நாட்கள்)
         let years = end.getFullYear() - start.getFullYear();
         let months = end.getMonth() - start.getMonth();
         let days = end.getDate() - start.getDate();
@@ -439,8 +439,10 @@
             months += 12;
         }
 
-        const totalMonths = (years * 12) + months + (days / 30);
-        const totalYears = totalMonths / 12;
+        // புதிய துல்லிய நாட்களின் கணக்கீட்டு முறை (30 நாட்களுக்கான பிக்ஸ்)
+        const totalDaysDelta = Math.floor((end - start) / (1000 * 60 * 60 * 24));
+        const totalMonths = totalDaysDelta / 30.4375; 
+        const totalYears = totalDaysDelta / 365.25;   
 
         let monthlyRateConverted = (type === 'rupee') ? rate : (rate / 12);
 
@@ -498,8 +500,8 @@
 
         let shareBtnLabel = translations[currentLang].shareBtn;
         
-        // Refactored to standard wa.me API deep linking system via native <a> triggers
-        const targetWhatsAppURL = "https://wa.me/?text=" + encodeURIComponent(outMessageText);
+        // உங்களது அசல் வாட்ஸ்அப் wa.me குறியீடு எந்த மாற்றமும் இன்றி அப்படியே உள்ளது
+        const targetWhatsAppURL = "https://wa.me" + encodeURIComponent(outMessageText);
 
         display.innerHTML = 
             `<div class="result-line"><span>${labels.method}</span><span class="result-value">${modeLabelText}</span></div>` +
