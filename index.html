@@ -406,6 +406,11 @@
         
         adaptPlaceholder();
     }
+
+    // Safely initializing layout configurations after complete asset load cycle
+    document.addEventListener('DOMContentLoaded', function() {
+        adaptPlaceholder();
+    });
     function runCalculation(event) {
         event.preventDefault();
         
