@@ -283,8 +283,9 @@
 
     <div class="switch-lang" id="langToggle" onclick="toggleLanguage()">Switch to English</div>
 </div>
+
 <script>
-    let currentLang = 'ta';
+       let currentLang = 'ta';
     let currentMode = 'thani'; 
     let generatedSummaryText = "";
 
@@ -415,9 +416,7 @@
         document.getElementById('btnShareText').innerText = t.shareBtn;
         
         adaptPlaceholder();
-    }
-
-    function runCalculation(event) {
+            function runCalculation(event) {
         event.preventDefault();
         
         const principal = parseRawNumber(document.getElementById('asal').value);
@@ -504,14 +503,23 @@
         } else {
             display.innerHTML = '<div class="result-line"><span>Calculation Type</span><span class="result-value">' + modeLabelText + '</span></div>' +
                 '<div class="result-line"><span>Principal Amount</span><span class="result-value">₹' + formattedPrincipal + '</span></div>' +
-'Duration' + durationTextString + '' +
-'Interest Amount₹' + formattedInterest + '' +
-'Total Amount₹' + formattedTotal + '';
-generatedSummaryText = "Interest Details (" + modeLabelText + ")\n\nPrincipal Amount: ₹" + formattedPrincipal + "\nDuration: " + durationTextString + "\nInterest Amount: ₹" + formattedInterest + "\nTotal Amount: ₹" + formattedTotal;
-}
-document.getElementById('btnShare').style.display = 'flex';
-}
-function sendWhatsApp() {
-if (!generatedSummaryText) return;
-window.open("whatsapp.com" + encodeURIComponent(generatedSummaryText), "_blank");
-}
+                '<div class="result-line"><span>Duration</span><span class="result-value">' + durationTextString + '</span></div>' +
+                '<div class="result-line"><span>Interest Amount</span><span class="result-value highlight">₹' + formattedInterest + '</span></div>' +
+                '<div class="result-line"><span>Total Amount</span><span class="result-value highlight">₹' + formattedTotal + '</span></div>';
+            
+            generatedSummaryText = "*Interest Details (" + modeLabelText + ")*\n\nPrincipal Amount: ₹" + formattedPrincipal + "\nDuration: " + durationTextString + "\nInterest Amount: ₹" + formattedInterest + "\nTotal Amount: ₹" + formattedTotal;
+        }
+
+        document.getElementById('btnShare').style.display = 'flex';
+    }
+
+    function sendWhatsApp() {
+        if (!generatedSummaryText) return;
+        window.open("https://whatsapp.com" + encodeURIComponent(generatedSummaryText), "_blank");
+    }
+</script>
+</body>
+</html>
+
+    }
+ 
