@@ -181,22 +181,23 @@
         <p id="sDesc">Compute traditional Roopa/Paisa Vatti and Bank interest scales dynamically.</p>
     </div>
 
+    <!-- Interest Type Dropdown is now FIRST -->
+    <div class="g">
+        <label id="l3">வட்டி வகை (Interest Type):</label>
+        <select id="calcType" onchange="updatePlaceholderAndLabels()">
+            <option value="roopa" selected>ரூபாய்/பைசா வட்டி (தனி வட்டி / மாதத்திற்கு)</option>
+            <option value="bank">Bank வட்டி (கூட்டு வட்டி / ஆண்டிற்கு)</option>
+        </select>
+    </div>
+
     <div class="g">
         <label id="l1">அசல் தொகை (Principal):</label>
         <input type="text" id="asal" placeholder="எ.கா. 1,00,000" oninput="formatAsalCommas(this)">
     </div>
     
     <div class="g">
-        <label id="l2">வட்டி விகிதம் (Vatti Rate):</label>
-        <input type="number" id="vattiRate" step="0.01" placeholder="எ.கா. 2 (மாதம்) அல்லது 7.5 (ஆண்டு)">
-    </div>
-
-    <div class="g">
-        <label id="l3">வட்டி வகை (Interest Type):</label>
-        <select id="calcType">
-            <option value="roopa" selected>ரூபாய்/பைசா வட்டி (மாதத்திற்கு)</option>
-            <option value="bank">Bank வட்டி (ஆண்டிற்கு / Kootu Vatti)</option>
-        </select>
+        <label id="l2">வட்டி விகிதம் (மாதத்திற்கு ₹100-க்கு):</label>
+        <input type="number" id="vattiRate" step="0.01" placeholder="எ.கா. 2 அல்லது 3 ரூபாய்">
     </div>
 
     <div class="date-container">
@@ -227,6 +228,31 @@
 <!-- 3. JAVASCRIPT LOGIC -->
 <script>
     let isTamil = true; 
+
+    // Dynamically updates placeholders when type changes
+    function updatePlaceholderAndLabels() {
+        const cType = document.getElementById('calcType').value;
+        const rateLabel = document.getElementById('l2');
+        const rateInput = document.getElementById('vattiRate');
+
+        if (isTamil) {
+            if (cType === 'roopa') {
+                rateLabel.innerText = "வட்டி விகிதம் (மாதத்திற்கு ₹100-க்கு):";
+                rateInput.placeholder = "எ.கா. 2 அல்லது 3 ரூபாய்";
+            } else {
+                rateLabel.innerText = "வட்டி விகிதம் (ஆண்டிற்கு %):";
+                rateInput.placeholder = "எ.கா. 7.5 அல்லது 9 %";
+            }
+        } else {
+            if (cType === 'roopa') {
+                rateLabel.innerText = "Interest Rate (per Month per ₹100):";
+                rateInput.placeholder = "e.g., 2 or 3 Rupees";
+            } else {
+                rateLabel.innerText = "Interest Rate (Annual %):";
+                rateInput.placeholder = "e.g., 7.5 or 9 %";
+            }
+        }
+    }
 
     function formatAsalCommas(input) {
         let value = input.value.replace(/,/g, '');
@@ -284,9 +310,11 @@
         let totalAmount = 0;
 
         if (cType === 'roopa') {
+            // Traditional Thani Vatti (Simple Interest)
             finalInterest = pVal * (rateVal / 100) * totalMonths;
             totalAmount = pVal + finalInterest;
         } else {
+            // Bank Kootu Vatti (Compound Interest - Annual Compounding standard)
             const annualRateDecimal = rateVal / 100;
             totalAmount = pVal * Math.pow((1 + annualRateDecimal), totalYears);
             finalInterest = totalAmount - pVal;
@@ -313,12 +341,12 @@
         document.getElementById('out').style.display = 'block';
         
         let methodText = isTamil ? 
-            (cType === 'roopa' ? 'ரூபாய்/பைசா வட்டி' : 'Bank வட்டி') : 
-            (cType === 'roopa' ? 'Roopa/Paisa Vatti' : 'Bank Vatti');
+            (cType === 'roopa' ? 'ரூபாய்/பைசா வட்டி (தனி வட்டி)' : 'Bank வட்டி (கூட்டு வட்டி)') : 
+            (cType === 'roopa' ? 'Roopa/Paisa Vatti (Simple Interest)' : 'Bank Vatti (Compound Interest)');
 
         let shareText = isTamil ? 
             `*வட்டி கணக்கீடு அறிக்கை*\n\nகணக்கீடு முறை: ${methodText}\nஅசல் தொகை: ₹${pVal.toLocaleString('en-IN')}\nகாலம்: ${timeString}\nவட்டி தொகை: ${displayInt}\nமொத்தம்: ${displayTot}` :
-            `*Interest Calculation Report*\n\nMethod: ${methodText}\nPrincipal: ₹${pVal.toLocaleString('en-IN')}\nTime: ${timeString}\nInterest: ${displayInt}\nTotal: ${displayTot}`;
+            `*Interest Report*\n\nMethod: ${methodText}\nPrincipal: ₹${pVal.toLocaleString('en-IN')}\nTime: ${timeString}\nInterest: ${displayInt}\nTotal: ${displayTot}`;
             
         let waButton = document.getElementById('waBtn');
         waButton.href = "https://whatsapp.com" + encodeURIComponent(shareText);
@@ -333,7 +361,6 @@
         if (!isTamil) {
             langBtn.innerText = "தமிழ் மொழிக்கு மாற்றவும்";
             document.getElementById('l1').innerText = "Principal Amount:";
-            document.getElementById('l2').innerText = "Interest Rate (Vatti Rate):";
             document.getElementById('l3').innerText = "Interest Type:";
             document.getElementById('l4').innerText = "Start Date:";
             document.getElementById('l5').innerText = "End Date:";
@@ -344,12 +371,11 @@
             document.getElementById('waBtn').innerText = "Share via WhatsApp";
             document.getElementById('sTitle').innerText = "Rural Tamil Nadu Simple and Compound Interest Calculator";
             
-            calcTypeSelect.options[0].text = "Roopa/Paisa Vatti (Per Month)";
-            calcTypeSelect.options[1].text = "Bank Vatti (Per Year / Compound)";
+            calcTypeSelect.options[0].text = "Roopa/Paisa Vatti (Simple Interest / Per Month)";
+            calcTypeSelect.options[1].text = "Bank Vatti (Compound Interest / Per Year)";
         } else {
             langBtn.innerText = "Switch to English";
             document.getElementById('l1').innerText = "அசல் தொகை (Principal):";
-            document.getElementById('l2').innerText = "வட்டி விகிதம் (Vatti Rate):";
             document.getElementById('l3').innerText = "வட்டி வகை (Interest Type):";
             document.getElementById('l4').innerText = "தொடங்கிய தேதி:";
             document.getElementById('l5').innerText = "முடிவுற்ற தேதி:";
@@ -360,9 +386,11 @@
             document.getElementById('waBtn').innerText = "WhatsApp வழியாக பகிரவும்";
             document.getElementById('sTitle').innerText = "தமிழ்நாடு கிராமப்புற தனி மற்றும் கூட்டு வட்டி கணக்கீடு";
             
-            calcTypeSelect.options[0].text = "ரூபாய்/பைசா வட்டி (மாதத்திற்கு)";
-            calcTypeSelect.options[1].text = "Bank வட்டி (ஆண்டிற்கு / Kootu Vatti)";
+            calcTypeSelect.options[0].text = "ரூபாய்/பைசா வட்டி (தனி வட்டி / மாதத்திற்கு)";
+            calcTypeSelect.options[1].text = "Bank வட்டி (கூட்டு வட்டி / ஆண்டிற்கு)";
         }
+
+        updatePlaceholderAndLabels();
 
         if (document.getElementById('sd').value && document.getElementById('ed').value) {
             calcRunMath();
