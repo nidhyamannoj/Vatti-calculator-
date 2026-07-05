@@ -212,7 +212,7 @@
         }
     </style>
 </head>
-<body>
+    <body>
 <div class="calculator-card">
     <div class="title" id="calcTitle">வட்டி கணக்கீட்டாளர்</div>
     
@@ -285,7 +285,8 @@
 </div>
 
 <script>
-       let currentLang = 'ta';
+
+    let currentLang = 'ta';
     let currentMode = 'thani'; 
     let generatedSummaryText = "";
 
@@ -416,7 +417,8 @@
         document.getElementById('btnShareText').innerText = t.shareBtn;
         
         adaptPlaceholder();
-            function runCalculation(event) {
+    }
+    function runCalculation(event) {
         event.preventDefault();
         
         const principal = parseRawNumber(document.getElementById('asal').value);
@@ -520,6 +522,3 @@
 </script>
 </body>
 </html>
-
-    }
- 
