@@ -207,7 +207,6 @@
     <div class="title" id="calcTitle">வட்டி கணக்கீட்டாளர்</div>
     
     <form id="vattiForm" onsubmit="runCalculation(event)">
-        <!-- Radio Buttons for Mode Selection -->
         <span class="section-label" id="lblCalcMethod">கணக்கீடு முறை:</span>
         <div class="radio-group-row">
             <label class="radio-option">
@@ -225,7 +224,6 @@
             <input type="text" id="asal" placeholder="எ.கா. 1,00,000" required oninput="handleAsalInput(this)">
         </div>
 
-        <!-- Dropdown Selector for Vatti Vagai -->
         <div class="form-group">
             <label id="lblVattiVagai">வட்டி வகை:</label>
             <select id="vattiVagai" onchange="adaptPlaceholder()">
@@ -365,12 +363,6 @@
         document.getElementById('btnShare').style.display = 'none';
     }
 
-    function adaptPlaceholder() {
-        const type = document.getElementById('vattiVagai').value;
-        const rateInput = document.getElementById('vattiRate');
-        rateInput.placeholder = (type === 'rupee') ? translations[currentLang].placeholderRupee : translations[currentLang].placeholderBank;
-    }
-
     function toggleLanguage() {
         currentLang = (currentLang === 'ta') ? 'en' : 'ta';
         const t = translations[currentLang];
@@ -395,8 +387,14 @@
         document.getElementById('optAnnually').innerText = t.optAnnually;
         document.getElementById('btnShareText').innerText = t.shareBtn;
         
-        adaptPlaceholder();
+        // Dynamic state-clean rules flushing past outputs upon toggle trigger execution
+        generatedSummaryText = "";
+        const resultCard = document.getElementById('resultDisplay');
+        resultCard.classList.remove('active');
+        resultCard.innerHTML = "";
+        document.getElementById('btnShare').style.display = 'none';
         
+        adaptPlaceholder();
     }
     function runCalculation(event) {
         event.preventDefault();
@@ -453,7 +451,7 @@
             const timesCompoundedPerYear = parseInt(document.getElementById('compoundFreq').value, 10);
             if (type === 'rupee') {
                 const annualEquivalentPercentage = (rate * 12); 
-                totalAmount = principal * Math.pow((1 + (annualEquivalentPercentage / (100 * timesCompoundedPerYear))), (timesCompoundedPerYear * totalYears));
+                totalAmount = principal * Math.pow((1 + (annualEquivalentPercentage / (100 * timesCompoundedPerYear))), (totalYears * timesCompoundedPerYear));
             } else {
                 totalAmount = principal * Math.pow((1 + ((rate / 100) / timesCompoundedPerYear)), (timesCompoundedPerYear * totalYears));
             }
@@ -495,6 +493,12 @@
         document.getElementById('btnShare').style.display = 'flex';
     }
 
+    function adaptPlaceholder() {
+        const type = document.getElementById('vattiVagai').value;
+        const rateInput = document.getElementById('vattiRate');
+        rateInput.placeholder = (type === 'rupee') ? translations[currentLang].placeholderRupee : translations[currentLang].placeholderBank;
+    }
+
     function sendWhatsApp() {
         if (!generatedSummaryText) return;
         window.open("https://whatsapp.com" + encodeURIComponent(generatedSummaryText), "_blank");
@@ -502,5 +506,3 @@
 </script>
 </body>
 </html>
-
-
