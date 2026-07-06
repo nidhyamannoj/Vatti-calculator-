@@ -90,6 +90,16 @@
             gap: 10px;
         }
 
+        /* அல்லது வார்த்தை மையத்தில் அமைய பிரத்யேக கிளாஸ் */
+        .divider-text {
+            display: block;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #777777;
+            margin: 25px 0 15px 0;
+        }
+
         input[type="text"],
         input[type="number"],
         input[type="date"],
@@ -284,19 +294,21 @@
             </select>
         </div>
 
-        <!-- கால அளவை நேரடியாக உள்ளிடும் பாக்ஸ்கள் (Years, Months, Days Inputs) -->
+        <!-- ஆரம்ப `0` மதிப்பு நீக்கப்பட்டு சொற்கள் பிளேஸ்ஹோல்டர்களாக மாற்றப்பட்டுள்ளன -->
         <div class="form-group">
             <label id="lblKaalaAlavu">கால அளவு (நேரடியாக உள்ளிடவும்):</label>
             <div class="input-row-3">
-                <input type="number" id="inputYears" placeholder="வருடம்" min="0" value="0" oninput="clearCalendarInputs()">
-                <input type="number" id="inputMonths" placeholder="மாதம்" min="0" max="11" value="0" oninput="clearCalendarInputs()">
-                <input type="number" id="inputDays" placeholder="நாள்" min="0" max="30" value="0" oninput="clearCalendarInputs()">
+                <input type="number" id="inputYears" placeholder="வருடம்" min="0" oninput="clearCalendarInputs()">
+                <input type="number" id="inputMonths" placeholder="மாதம்" min="0" max="11" oninput="clearCalendarInputs()">
+                <input type="number" id="inputDays" placeholder="நாள்" min="0" max="30" oninput="clearCalendarInputs()">
             </div>
         </div>
 
-        <!-- நாட்காட்டி தேர்வு (Calendar Datepicker Options) -->
+        <!-- "அல்லது" மையப்பகுதிக்கு மாற்றப்பட்டு, நாட்காட்டி புதிய வரியிலிருந்து தொடங்குகிறது -->
+        <span class="divider-text" id="lblDivider">- அல்லது -</span>
+
         <div class="form-group">
-            <label id="lblStartDate">அல்லது தேதியைத் தேர்ந்தெடுக்கவும்:</label>
+            <label id="lblStartDate">தொடங்கிய தேதி:</label>
             <input type="date" id="startDate" onchange="clearDirectInputs()">
         </div>
 
@@ -336,7 +348,7 @@
             vagal: "வட்டி வகை:",
             calcMethod: "கணக்கீடு முறை:",
             vigitham: "வட்டி விகிதம்:",
-            start: "அல்லது தேதியைத் தேர்ந்தெடுக்கவும்:",
+            start: "தொடங்கிய தேதி:",
             end: "முடிவுற்ற தேதி:",
             btn: "வட்டியைக் கணக்கிடு",
             toggle: "Switch to English",
@@ -352,7 +364,9 @@
             optHalfYearly: "ஆறு மாதமொருமுறை",
             optAnnually: "ஆண்டிற்கு ஒருமுறை",
             shareBtn: "WhatsApp பகிர்க",
-            kaalaAlavu: "கால அளவு (நேரடியாக உள்ளிடவும்):"
+            kaalaAlavu: "கால அளவு (நேரடியாக உள்ளிடவும்):",
+            divider: "- அல்லது -",
+            pYear: "வருடம்", pMonth: "மாதம்", pDay: "நாள்"
         },
         en: {
             title: "Interest Calculator",
@@ -360,7 +374,7 @@
             vagal: "Interest Type:",
             calcMethod: "Calculation Mode:",
             vigitham: "Interest Rate:",
-            start: "Or Select Dates Below:",
+            start: "Start Date:",
             end: "End Date:",
             btn: "Calculate Interest",
             toggle: "தமிழில் மாற்றவும்",
@@ -376,7 +390,9 @@
             optHalfYearly: "Half-Yearly",
             optAnnually: "Annually",
             shareBtn: "Share on WhatsApp",
-            kaalaAlavu: "Duration (Enter Directly):"
+            kaalaAlavu: "Duration (Enter Directly):",
+            divider: "- OR -",
+            pYear: "Years", pMonth: "Months", pDay: "Days"
         }
     };
 
@@ -384,7 +400,6 @@
         return parseFloat(str.replace(/,/g, '')) || 0;
     }
 
-    // FIXED: எண்கள் இரட்டிப்பாகத் தோன்றும் பிழை [parts0, parts1] துல்லியமாக நீக்கப்பட்டுள்ளது
     function formatIndianCurrency(amount) {
         if (isNaN(amount)) return "0.00";
         let parts = amount.toFixed(2).split('.');
@@ -417,16 +432,14 @@
         inputElement.setSelectionRange(cursorPosition, cursorPosition);
     }
 
-    // நாட்காட்டியைத் தேர்ந்தெடுத்தால் நேரடி பாக்ஸ் மதிப்புகளை 0 ஆக்கும் செயல்பாடு
     function clearDirectInputs() {
         if(document.getElementById('startDate').value || document.getElementById('endDate').value) {
-            document.getElementById('inputYears').value = 0;
-            document.getElementById('inputMonths').value = 0;
-            document.getElementById('inputDays').value = 0;
+            document.getElementById('inputYears').value = "";
+            document.getElementById('inputMonths').value = "";
+            document.getElementById('inputDays').value = "";
         }
     }
 
-    // நேரடி பாக்ஸில் டைப் செய்தால் நாட்காட்டித் தேர்வை நீக்கும் செயல்பாடு
     function clearCalendarInputs() {
         document.getElementById('startDate').value = "";
         document.getElementById('endDate').value = "";
@@ -476,6 +489,11 @@
         document.getElementById('optAnnually').innerText = t.optAnnually;
         document.getElementById('txtShareBtn').innerText = t.shareBtn;
         document.getElementById('lblKaalaAlavu').innerText = t.kaalaAlavu;
+        document.getElementById('lblDivider').innerText = t.divider;
+        
+        document.getElementById('inputYears').placeholder = t.pYear;
+        document.getElementById('inputMonths').placeholder = t.pMonth;
+        document.getElementById('inputDays').placeholder = t.pDay;
         
         document.getElementById('resultDisplay').classList.remove('active');
         document.getElementById('buttonsBar').classList.remove('active');
@@ -495,7 +513,7 @@
         const startStr = document.getElementById('startDate').value;
         const endStr = document.getElementById('endDate').value;
 
-        // நேரடி பாக்ஸ்கள் 0 ஆக இருந்து, தேதிகள் தேர்ந்தெடுக்கப்பட்டிருந்தால் கால அளவைக் கணக்கிடும்
+        // தேதிகள் தேர்ந்தெடுக்கப்பட்டிருந்தால் கால அளவைக் கணக்கிடும்
         if (startStr && endStr && years === 0 && months === 0 && days === 0) {
             const start = new Date(startStr);
             const end = new Date(endStr);
@@ -523,7 +541,6 @@
             return;
         }
 
-        // வட்டி வகைக்கு ஏற்ப (ரூபாய் வட்டிக்கு 30 நாள் கணக்கு, பேங்க் வட்டிக்கு காலண்டர் கணக்கு) மாறும் அல்காரிதம்
         let totalMonths = 0;
         let totalYears = 0;
 
@@ -588,7 +605,6 @@
             `<div class="result-line"><span>${labels.interest}</span><span class="result-value highlight">₹${formattedInterest}</span></div>` +
             `<div class="result-line"><span>${labels.total}</span><span class="result-value highlight">₹${formattedTotal}</span></div>`;
 
-        // FIXED FOR MOBILE:about:blank பிழை வராதவாறு நேரடியாக வாட்ஸ்அப் செயலிக்கு அனுப்பும் குறியீடு
         finalWhatsAppMessageText = outMessageText;
         document.getElementById('buttonsBar').classList.add('active');
     }
