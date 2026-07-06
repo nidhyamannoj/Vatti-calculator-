@@ -323,12 +323,12 @@
         return parseFloat(str.replace(/,/g, '')) || 0;
     }
 
-    // FIXED: Correct array syntax arrays mapping indices [0] and [1] to fix the text repetition error
+    // FIXED: Explicitly added indices [0] and [1] to safely output formatted numbers without duplicates
     function formatIndianCurrency(amount) {
         if (isNaN(amount)) return "0.00";
         let parts = amount.toFixed(2).split('.');
-        let numStr = parts[0]; 
-        let decimals = parts[1]; 
+        let numStr = parts[0];     // Pulls whole integer numbers smoothly
+        let decimals = parts[1];   // Pulls only the standard 2-digit paise numbers
         if (numStr.length <= 3) return numStr + '.' + decimals;
         let lastThree = numStr.substring(numStr.length - 3);
         let otherNumbers = numStr.substring(0, numStr.length - 3);
