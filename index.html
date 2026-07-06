@@ -266,7 +266,7 @@
 </div>
 
 <script>
-        let currentLang = 'ta';
+    let currentLang = 'ta';
     let currentMode = 'thani'; 
     let clipboardTextRaw = ""; 
 
@@ -323,12 +323,12 @@
         return parseFloat(str.replace(/,/g, '')) || 0;
     }
 
-    // AUDITED & FIXED: Resolved array replication index error
+    // FIXED: Correct array syntax arrays mapping indices [0] and [1] to fix the text repetition error
     function formatIndianCurrency(amount) {
         if (isNaN(amount)) return "0.00";
         let parts = amount.toFixed(2).split('.');
-        let numStr = parts[0];     // Correct Index 0 handles whole integers
-        let decimals = parts[1];   // Correct Index 1 handles trailing fractions
+        let numStr = parts[0]; 
+        let decimals = parts[1]; 
         if (numStr.length <= 3) return numStr + '.' + decimals;
         let lastThree = numStr.substring(numStr.length - 3);
         let otherNumbers = numStr.substring(0, numStr.length - 3);
@@ -406,7 +406,6 @@
         
         adaptPlaceholder();
     }
-
     function runCalculation(event) {
         event.preventDefault();
         
@@ -488,7 +487,6 @@
         let outMessageText = "";
         let labels = {};
 
-        // AUDITED & UNIFIED: Variable bindings matched cleanly across both branches
         if (currentLang === 'ta') {
             labels = { method: "கணக்கீடு முறை", principal: "அசல் தொகை", duration: "கால அளவு", interest: "வட்டித் தொகை", total: "மொத்தத் தொகை" };
             outMessageText = `*வட்டி விபரங்கள் (${modeLabelText})*\n\n• அசல் தொகை: ₹${formattedPrincipal}\n• கால அளவு: ${durationTextString}\n• வட்டித் தொகை: ₹${formattedInterest}\n• மொத்தத் தொகை: ₹${formattedTotal}`;
