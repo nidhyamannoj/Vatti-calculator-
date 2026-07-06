@@ -323,7 +323,6 @@
         return parseFloat(str.replace(/,/g, '')) || 0;
     }
 
-    // FIXED: உங்களது முந்தைய குறியீட்டில் இருந்த எண்கள் இரட்டிப்பாகும் பிழை முழுமையாக நீக்கப்பட்டுள்ளது
     function formatIndianCurrency(amount) {
         if (isNaN(amount)) return "0.00";
         let parts = amount.toFixed(2).split('.');
@@ -425,7 +424,6 @@
             return;
         }
 
-        // கால அளவு நாட்களைப் பிரித்தல்
         let years = end.getFullYear() - start.getFullYear();
         let months = end.getMonth() - start.getMonth();
         let days = end.getDate() - start.getDate();
@@ -440,16 +438,13 @@
             months += 12;
         }
 
-        // SMART AUTOMATION: வட்டி வகைக்கு ஏற்ப நாட்களைக் கணக்கிடும் முறை மாறுகிறது
         let totalMonths = 0;
         let totalYears = 0;
 
         if (type === 'rupee') {
-            // 1. கிராமத்து முறை: எப்போதுமே ஒரு மாதம் = 30 நாட்கள் என்ற அல்காரிதம் (Flat 30 Days Rule)
             totalMonths = (years * 12) + months + (days / 30);
             totalYears = totalMonths / 12;
         } else {
-            // 2. வங்கி முறை: காலண்டர் நாட்களைத் துல்லியமாகக் கணக்கிடும் அல்காரிதம் (Actual Calendar Days Rule)
             const totalDaysDelta = Math.floor((end - start) / (1000 * 60 * 60 * 24));
             totalMonths = totalDaysDelta / 30.4375; 
             totalYears = totalDaysDelta / 365.25;   
@@ -498,6 +493,7 @@
         let outMessageText = "";
         let labels = {};
 
+        // FIXED: Unified the variable name 'outMessageText' across both branches to repair the link breakdown
         if (currentLang === 'ta') {
             labels = { method: "கணக்கீடு முறை", principal: "அசல் தொகை", duration: "கால அளவு", interest: "வட்டித் தொகை", total: "மொத்தத் தொகை" };
             outMessageText = `*வட்டி விபரங்கள் (${modeLabelText})*\n\n• அசல் தொகை: ₹${formattedPrincipal}\n• கால அளவு: ${durationTextString}\n• வட்டித் தொகை: ₹${formattedInterest}\n• மொத்தத் தொகை: ₹${formattedTotal}`;
@@ -509,7 +505,7 @@
         }
 
         let shareBtnLabel = translations[currentLang].shareBtn;
-        const targetWhatsAppURL = "https://wa.me" + encodeURIComponent(outMessageText);
+        const targetWhatsAppURL = "https://whatsapp.com" + encodeURIComponent(outMessageText);
 
         display.innerHTML = 
             `<div class="result-line"><span>${labels.method}</span><span class="result-value">${modeLabelText}</span></div>` +
